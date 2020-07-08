@@ -9,7 +9,7 @@ RUN mkdir -p $HOME
 WORKDIR /webhome/src
 
 RUN npm init --yes
-RUN npm install -g pm2 js-yaml
+RUN npm install -g pm2
 
 COPY . $HOME/
 
