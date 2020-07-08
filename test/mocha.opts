@@ -1,0 +1,3 @@
+--exit
+--require ./test/globals.js
+--timeout 5000
