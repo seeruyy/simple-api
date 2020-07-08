@@ -1,5 +1,5 @@
 apps:
-  - name:   Test API
+  - name:   Simple API
     script: app/index.js
     env:
-      PROCESS_NAME: test-api
+      PROCESS_NAME: simple-api

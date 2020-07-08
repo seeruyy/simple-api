@@ -28,8 +28,9 @@ describe('Create', async() => {
         const { merchantId } = merchant;
 
         return request(app)
-            .put(`/api/transactions/`)
-            .send({ userId, merchantId, amountInCents: 1000 })
+            .put('/api/transactions/')
+            .auth(user.email, password)
+            .send({ merchantId, amountInCents: 1000 })
             .expect(201)
             .then(async(res) => {
                 const { status } = res.body;
@@ -57,8 +58,9 @@ describe('Create', async() => {
         await factory.create('Transaction', { userId, merchantId, amountInCents: 1000 })
 
         return request(app)
-            .put(`/api/transactions/`)
-            .send({ userId, merchantId, amountInCents: -100 })
+            .put('/api/transactions/')
+            .auth(user.email, password)
+            .send({ merchantId, amountInCents: -100 })
             .expect(201)
             .then(async(res) => {
                 const { status } = res.body;
@@ -74,7 +76,7 @@ describe('Create', async() => {
             });
     });
 
-    it('Should return 400 when user does not exist', async() => {
+    it('Should return 403 when user does not exist', async() => {
         const password     = 'ColdPlay';
         const hashPassword = await hashUserPassword(password);
         
@@ -85,18 +87,14 @@ describe('Create', async() => {
         const { merchantId } = merchant;
 
         return request(app)
-            .put(`/api/transactions/`)
-            .send({ userId: 99999, merchantId, amountInCents: 100 })
-            .expect(400)
+            .put('/api/transactions/')
+            .auth('not_existing_email@domain.com', 'NewColdPlay')
+            .send({ merchantId, amountInCents: 100 })
+            .expect(403)
             .then(response => {
                 const { body: error } = response;
 
-                expect(error.message).to.be.equal('Validation error');
-                expect(error.originalError).to.lengthOf(1);
-                expect(error.originalError[0]).to.deep.equal({
-                    message: 'The user does not exist',
-                    code:    'USER_ID_ERROR',
-                });
+                expect(error.message).to.be.equal('Authentication failed');
             });
     });
 
@@ -108,11 +106,10 @@ describe('Create', async() => {
         
         await factory.create('Merchant');
 
-        const { userId } = user;
-
         return request(app)
-            .put(`/api/transactions/`)
-            .send({ userId, merchantId: 99999, amountInCents: 100 })
+            .put('/api/transactions/')
+            .auth(user.email, password)
+            .send({ merchantId: 99999, amountInCents: 100 })
             .expect(400)
             .then(response => {
                 const { body: error } = response;
@@ -132,12 +129,12 @@ describe('Create', async() => {
         const user         = await factory.create('User', { password: hashPassword });
         const merchant     = await factory.create('Merchant');
 
-        const { userId }     = user;
         const { merchantId } = merchant;
 
         return request(app)
-            .put(`/api/transactions/`)
-            .send({ userId, merchantId, amountInCents: 0 })
+            .put('/api/transactions/')
+            .auth(user.email, password)
+            .send({ merchantId, amountInCents: 0 })
             .expect(400)
             .then(response => {
                 const { body: error } = response;
@@ -157,12 +154,12 @@ describe('Create', async() => {
         const user         = await factory.create('User', { password: hashPassword });
         const merchant     = await factory.create('Merchant');
 
-        const { userId }     = user;
         const { merchantId } = merchant;
 
         return request(app)
-            .put(`/api/transactions/`)
-            .send({ userId, merchantId, amountInCents: 'abc' })
+            .put('/api/transactions/')
+            .auth(user.email, password)
+            .send({ merchantId, amountInCents: 'abc' })
             .expect(400)
             .then(response => {
                 const { body: error } = response;
@@ -189,8 +186,9 @@ describe('Create', async() => {
         await factory.create('Transaction', { userId, merchantId, amountInCents: -100 })
 
         return request(app)
-            .put(`/api/transactions/`)
-            .send({ userId, merchantId, amountInCents: -401 })
+            .put('/api/transactions/')
+            .auth(user.email, password)
+            .send({ merchantId, amountInCents: -401 })
             .expect(200)
             .then(async(response) => {
                 const { status } = response.body;
@@ -219,8 +217,9 @@ describe('Create', async() => {
         await factory.create('Transaction', { userId, merchantId, amountInCents: -100 })
 
         return request(app)
-            .put(`/api/transactions/`)
-            .send({ userId, merchantId, amountInCents: -400 })
+            .put('/api/transactions/')
+            .auth(user.email, password)
+            .send({ merchantId, amountInCents: -400 })
             .expect(201)
             .then(async(response) => {
                 const { status } = response.body;

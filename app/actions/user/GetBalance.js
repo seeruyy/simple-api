@@ -5,6 +5,8 @@ const HttpStatus = require('http-status-codes');
 const User       = require('../../modules/User');
 const Action     = require('../../../lib/Action');
 
+const { basicAuthentication } = require('../../server/middleware');
+
 class GetBalance extends Action {
 
     static get method() {
@@ -12,24 +14,27 @@ class GetBalance extends Action {
     }
 
     static get path() {
-        return '/users/balance/:userId';
+        return '/users/balance/';
     }
 
     get requiredParamaters() {
-        return ['userId'];
+        return [];
+    }
+
+    authorization() {
+        return basicAuthentication(this.req);
+    }
+
+    async initialize() {
+        await super.initialize();
+
+        this.authorizedUser = _.get(this.req, 'requestNamespace.authorizedUser', {});
     }
 
     async before() {
-        const { userId } = this.parameters;
+        const { userId: authorizedUserId } = this.authorizedUser;
 
-        this.userModule  = await User.createById(userId);
-        
-        if (!this.userModule.getId()) {
-            const error          = new Error('User does not exist');
-            error.httpStatusCode = HttpStatus.NOT_FOUND;
-
-            throw error;
-        }
+        this.userModule = await User.createById(authorizedUserId);
     }
 
     async action() {

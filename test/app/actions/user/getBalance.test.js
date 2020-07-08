@@ -37,7 +37,8 @@ describe('GetBalance', async() => {
         ]);
 
         return request(app)
-            .get(`/api/users/balance/${user2.userId}`)
+            .get('/api/users/balance/')
+            .auth(user2.email, password)
             .expect(200)
             .then(async(res) => {
                 const { balance } = res.body;
@@ -66,7 +67,8 @@ describe('GetBalance', async() => {
         ]);
 
         return request(app)
-            .get(`/api/users/balance/${user2.userId}`)
+            .get('/api/users/balance/')
+            .auth(user2.email, password)
             .expect(200)
             .then(async(res) => {
                 const { balance } = res.body;
@@ -90,7 +92,8 @@ describe('GetBalance', async() => {
         ]);
 
         return request(app)
-            .get(`/api/users/balance/${user2.userId}`)
+            .get('/api/users/balance/')
+            .auth(user2.email, password)
             .expect(200)
             .then(async(res) => {
                 const { balance } = res.body;
@@ -99,19 +102,20 @@ describe('GetBalance', async() => {
             });
     });
 
-    it('Should return 404 when user does not exist', async() => {
+    it('Should return 403 when user does not exist', async() => {
         const password     = 'ColdPlay';
         const hashPassword = await hashUserPassword(password);
 
         await factory.create('User', { password: hashPassword });
 
         return request(app)
-            .get(`/api/users/balance/99999999`)
-            .expect(404)
+            .get('/api/users/balance/')
+            .auth('not_existing_email@domain.com', 'NewColdPlay')
+            .expect(403)
             .then(response => {
                 const { body: error } = response;
 
-                expect(error.message).to.be.equal('User does not exist');
+                expect(error.message).to.be.equal('Authentication failed');
             });
     });
 });

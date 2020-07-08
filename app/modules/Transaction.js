@@ -28,18 +28,6 @@ class Transaction extends Abstract {
         return 0;
     }
 
-    async validateUser() {
-        const { userId }    = this.toObject() || {};
-        const doesUserExist = await User.checkExistingById(userId);
-
-        if (!doesUserExist) {
-            this._addError({
-                message: 'The user does not exist',
-                code:    'USER_ID_ERROR'
-            });
-        }
-    }
-
     async validateMerchant() {
         const { merchantId }   = this.toObject() || {};
         const doesMerchantExist = await Merchant.checkExistingById(merchantId);
