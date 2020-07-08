@@ -1,0 +1,18 @@
+server:
+    host:          localhost
+    port:          3000
+    protocol:      http
+    basePath:      /api/
+    masterKey:     qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+    masterIV:      qqqqqqqqqqqqqqqq
+    saltRounds:    8
+    bodySizeLimit: 5mb
+    actionsPath:   app/actions
+    cors:
+        whitelist:
+            - localhost
+        credentials: true
+
+mongodb:
+    uri:        mongodb://localhost:27017/simple-api
+    modelsPath: /app/models

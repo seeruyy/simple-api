@@ -1,0 +1,36 @@
+{
+  "name": "test-api",
+  "version": "1.0.0",
+  "description": "Simple API",
+  "author": "Sergey Opria",
+  "license": "ISC",
+  "main": "./app/index.js",
+  "scripts": {
+    "mocha": "./node_modules/nyc/bin/nyc.js --reporter=lcov --reporter=text-summary _mocha",
+    "start": "pm2 restart processes.yaml -s && trap 'echo Stop processes... ; pm2 stop processes.yaml -s ; exit 0' INT && pm2 logs",
+    "test": "NODE_ENV=test npm run mocha"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "config": "^3.3.1",
+    "csvtojson": "^2.0.10",
+    "express": "^4.17.1",
+    "helmet": "^3.23.3",
+    "http-status-codes": "^1.4.0",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.9.21",
+    "request": "^2.88.2",
+    "uuid": "^8.2.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "factory-girl": "^5.0.4",
+    "faker": "^4.1.0",
+    "mocha": "^6.2.3",
+    "nock": "^12.0.3",
+    "nyc": "^15.1.0",
+    "supertest": "^4.0.2"
+  }
+}

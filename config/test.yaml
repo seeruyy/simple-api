@@ -1,0 +1,5 @@
+server:
+    port: 4000
+
+mongodb:
+    uri: mongodb://localhost:27017/simple-api-test
