@@ -1,0 +1,10 @@
+{
+    "server": {
+        "host":      "HOST",
+        "masterKey": "MASTER_KEY",
+        "masterIV":  "MASTER_IV",
+    },
+    "mongodb": {
+        "uri": "MONGODB_URI"
+    },
+}
