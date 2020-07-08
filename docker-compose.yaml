@@ -1,0 +1,42 @@
+version: '2.1'
+
+services:
+  simple-api-mongo:
+    image: mongo:4.0.10-xenial
+    container_name: simple-api-mongo
+    logging:
+      driver: none
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+    command: '--wiredTigerCacheSizeGB 1'
+    volumes:
+      - ~/dockerData/mongodb/data:/data/db
+      - ~/dockerData/mongodb/config:/data/configdb
+    networks:
+      - simple-api-network
+
+  simple-api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV}
+    image: simple-api-image
+    container_name: simple-api
+    env_file: ./.env
+    environment:
+      - "MONGODB_URI=mongodb://simple-api-mongo:27017/simple-api"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    mem_limit: 1g
+    mem_reservation: 1g
+    depends_on:
+      - simple-api-mongo
+    networks:
+      - simple-api-network
+
+networks:
+  simple-api-network:
+    driver: bridge
