@@ -6,6 +6,7 @@
   "license": "ISC",
   "main": "./app/index.js",
   "scripts": {
+    "launch": "docker-compose up --build --force-recreate -d",
     "mocha": "./node_modules/nyc/bin/nyc.js --reporter=lcov --reporter=text-summary _mocha",
     "start": "pm2 restart processes.yaml -s && trap 'echo Stop processes... ; pm2 stop processes.yaml -s ; exit 0' INT && pm2 logs",
     "test": "NODE_ENV=test npm run mocha"
