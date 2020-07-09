@@ -9,7 +9,10 @@ services:
     ports:
       - "27017:27017"
     restart: unless-stopped
-    command: '--wiredTigerCacheSizeGB 1'
+    mem_limit: 600mb
+    mem_reservation: 600mb
+    oom_score_adj: -1000
+    command: '--wiredTigerCacheSizeGB 0.3'
     volumes:
       - ~/dockerData/mongodb/data:/data/db
       - ~/dockerData/mongodb/config:/data/configdb
@@ -30,8 +33,8 @@ services:
     ports:
       - "80:3000"
     restart: unless-stopped
-    mem_limit: 1g
-    mem_reservation: 1g
+    mem_limit: 400mb
+    mem_reservation: 400mb
     depends_on:
       - simple-api-mongo
     networks:
