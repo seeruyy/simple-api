@@ -56,6 +56,13 @@ class Transaction extends Abstract {
                 code:    'AMOUNT_IN_CENTS_ZERO_ERROR'
             });
         }
+
+        if (amountInCents % 1 !== 0) {
+            return this._addError({
+                message: 'amountInCents cannot be float',
+                code:    'AMOUNT_IN_CENTS_FLOAT_ERROR'
+            });
+        }
     }
 
     async validateUserBalance() {

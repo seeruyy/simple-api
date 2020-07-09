@@ -148,6 +148,31 @@ describe('Create', async() => {
             });
     });
 
+    it('Should return 400 when amountInCents is float', async() => {
+        const password     = 'ColdPlay';
+        const hashPassword = await hashUserPassword(password);
+        const user         = await factory.create('User', { password: hashPassword });
+        const merchant     = await factory.create('Merchant');
+
+        const { merchantId } = merchant;
+
+        return request(app)
+            .put('/api/transactions/')
+            .auth(user.email, password)
+            .send({ merchantId, amountInCents: 12.234567898765 })
+            .expect(400)
+            .then(response => {
+                const { body: error } = response;
+
+                expect(error.message).to.be.equal('Validation error');
+                expect(error.originalError).to.lengthOf(1);
+                expect(error.originalError[0]).to.deep.equal({
+                    message: 'amountInCents cannot be float',
+                    code:    'AMOUNT_IN_CENTS_FLOAT_ERROR',
+                });
+            });
+    });
+
     it('Should return 400 when amountInCents is not number', async() => {
         const password     = 'ColdPlay';
         const hashPassword = await hashUserPassword(password);
